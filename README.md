@@ -1,137 +1,137 @@
-using Dapper;
-using StudentManagement.WebAPI.Models;
-using StudentManagement.WebAPI.RepositoryContracts;
-using StudentManagement.WebAPI.ServiceContracts.DTOs;
-using StudentManagement.WebAPI.SqlConnection1;
-using System.Data;
+```markdown
+# Student Management Web API
 
+A simple Student Management REST API built with ASP.NET Core Web API, C#, Dapper, and SQL Server.
 
-namespace StudentManagement.WebAPI.Repository;
+## Technologies
 
-public class StudentsRepo : IStudentRepo
+- C#
+- ASP.NET Core Web API
+- Dapper
+- SQL Server
+- Stored Procedures
+- Swagger
+
+## Features
+
+- Create Student
+- Get All Students
+- Get Student By ID
+- Update Student
+- Delete Student
+- Email Validation
+- DTOs
+- Async/Await
+- Dependency Injection
+
+## Architecture
+
+```text
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+Dapper
+    ↓
+Stored Procedures
+    ↓
+SQL Server
+```
+
+## Project Structure
+
+```text
+StudentManagement.WebAPI
+│
+├── Controllers
+├── Models
+├── Repository
+├── RepositoryContracts
+├── Services
+├── ServiceContracts
+│   └── DTOs
+├── SqlConnection1
+├── Program.cs
+└── appsettings.json
+```
+
+## Student Fields
+
+```text
+StudentID
+Name
+Age
+Gender
+Email
+Course
+Marks
+CreatedAt
+```
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/students` | Get all students |
+| GET | `/api/students/{studentID}` | Get student by ID |
+| POST | `/api/students` | Create student |
+| PUT | `/api/students/{studentID}` | Update student |
+| DELETE | `/api/students/{studentID}` | Delete student |
+
+## Stored Procedures
+
+```text
+CreateStudent
+GetAllStudents
+GetStudentByID
+CheckStudentEmail
+UpdateStudent
+DeleteStudentByID
+```
+
+## Validation
+
+- Student ID is validated as a GUID.
+- Email is checked before creating a student.
+- Duplicate emails are rejected.
+- Non-existing students return `404 Not Found`.
+
+## HTTP Status Codes
+
+```text
+200 OK
+201 Created
+400 Bad Request
+404 Not Found
+409 Conflict
+500 Internal Server Error
+```
+
+## Database Configuration
+
+Update the connection string in `appsettings.json`.
+
+```json
 {
-    private SqlConnectionFactory _sqlConnection;
-    public StudentsRepo(SqlConnectionFactory sqlConnectionFactory)
-    {
-        _sqlConnection = sqlConnectionFactory;
-    }
-    public async Task<StudentResponse> CreateStudentRepo(
-     StudentAddRequest studentRequest)
-    {
-        // Convert DTO to Student
-        var student = studentRequest.ToStudent();
-
-        // Generate values
-        student.StudentID = Guid.NewGuid();
-        student.CreatedAt = DateTime.UtcNow.ToString("O");
-
-        using var connection = _sqlConnection.CreateConnection();
-
-        // Insert student
-        await connection.ExecuteAsync(
-            "CreateStudent",
-            new
-            {
-                student.StudentID,
-                student.Name,
-                student.Email,
-                student.Age,
-                student.Gender,
-                student.Course,
-                student.Marks,
-                student.CreatedAt
-            },
-            commandType: CommandType.StoredProcedure
-        );
-
-        // Convert Student -> Response DTO
-        return student.ToStudentResponse();
-    }
-
-    public async Task<bool> DeleteStudentRepo(Guid? studentID)
-    {
-        using var connection = _sqlConnection.CreateConnection();
-
-        var Deleted = await connection.QueryFirstOrDefaultAsync(
-             "DeleteStudentByID",
-             new { StudentID = studentID },
-             commandType: CommandType.StoredProcedure
-             );
-
-        if (Deleted == null)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public async Task<List<StudentResponse>> GetAllStudentsRepo()
-    {
-        var connection = _sqlConnection.CreateConnection();
-
-        var students = await connection.QueryAsync<Student>
-            (
-              "GetAllStudents",
-               commandType: CommandType.StoredProcedure
-            );
-
-        var StudentsList = students.Select(e => e.ToStudentResponse()).ToList();
-
-        return StudentsList;
-    }
-
-    public async Task<StudentResponse> GetStudentByIDRepo(Guid studentId)
-    {
-        using var connection = _sqlConnection.CreateConnection();
-
-       var student  = await connection
-            .QueryFirstOrDefaultAsync<Student>(
-                "GetStudentByID",
-                new { StudentID = studentId }
-                , commandType: CommandType.StoredProcedure
-            );
-
-        if (student == null)
-        {
-            throw new KeyNotFoundException("StudentID doest't Exists in Current Database");
-        }
-
-        return student.ToStudentResponse();
-    }
-
-    public async Task<StudentResponse?> UpdateStudentRepo(StudentAddRequest student, Guid studentID)
-    {
-        if (studentID == Guid.Empty)
-        {
-            throw new ArgumentException("StudentID cannot be empty.");
-        }
-
-        using var connection = _sqlConnection.CreateConnection();
-
-        var rowsAffected = await connection.ExecuteAsync(
-            "UpdateStudent",
-            new
-            {
-                StudentID = studentID,
-                student.Name,
-                student.Email,
-                student.Age,
-                student.Gender,
-                student.Course,
-                student.Marks
-            },
-            commandType: CommandType.StoredProcedure
-        );
-
-        if (rowsAffected == 0)
-        {
-            return null;
-        }
-        //Convert to Student
-        var studentModel = student.ToStudent();
-        studentModel.StudentID = studentID;
-
-        return studentModel.ToStudentResponse();
-    }
+  "ConnectionStrings": {
+    "default": "Server=YOUR_SERVER;Database=StudentManagement;Trusted_Connection=True;TrustServerCertificate=True;"
+  }
 }
+```
+
+## Run the Project
+
+```bash
+dotnet restore
+dotnet build
+dotnet run
+```
+
+After starting the application, open Swagger to test the API.
+
+## Author
+
+Saqeeb Khan
+```
