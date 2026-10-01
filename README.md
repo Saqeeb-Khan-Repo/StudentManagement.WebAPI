@@ -25,8 +25,7 @@ A simple Student Management REST API built with ASP.NET Core Web API, C#, Dapper
 - Dependency Injection
 
 ## Architecture
-
-```text
+```
 Controller
     ↓
 Service
@@ -42,7 +41,7 @@ SQL Server
 
 ## Project Structure
 
-```text
+```
 StudentManagement.WebAPI
 │
 ├── Controllers
@@ -59,7 +58,7 @@ StudentManagement.WebAPI
 
 ## Student Fields
 
-```text
+```
 StudentID
 Name
 Age
@@ -82,7 +81,7 @@ CreatedAt
 
 ## Stored Procedures
 
-```text
+```
 CreateStudent
 GetAllStudents
 GetStudentByID
@@ -109,17 +108,7 @@ DeleteStudentByID
 500 Internal Server Error
 ```
 
-## Database Configuration
 
-Update the connection string in `appsettings.json`.
-
-```json
-{
-  "ConnectionStrings": {
-    "default": "Server=YOUR_SERVER;Database=StudentManagement;Trusted_Connection=True;TrustServerCertificate=True;"
-  }
-}
-```
 
 ## Run the Project
 
@@ -134,4 +123,3 @@ After starting the application, open Swagger to test the API.
 ## Author
 
 Saqeeb Khan
-```
