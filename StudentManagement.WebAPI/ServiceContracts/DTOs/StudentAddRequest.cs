@@ -18,8 +18,6 @@ public class StudentAddRequest
     public string? Gender { get; set; }
 
     [Required]
-    [EmailAddress]
-    [StringLength(150)]
     public string? Email { get; set; }
 
     [Required]
@@ -29,7 +27,6 @@ public class StudentAddRequest
     [Required]
     [Range(0,100)]
     public decimal? Marks { get; set; }
-    public string? CreatedAt { get; set; }
 
     /// <summary>
     /// Method to Convert StudentRequest into Student Object
@@ -44,7 +41,6 @@ public class StudentAddRequest
           Course = Course,
           Gender = Gender,
           Marks = Marks,
-          CreatedAt = CreatedAt,
           Age = Age
         };
     }

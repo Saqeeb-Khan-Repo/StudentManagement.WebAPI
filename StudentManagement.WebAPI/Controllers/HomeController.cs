@@ -68,7 +68,7 @@ public class HomeController : ControllerBase
         }
     }
     [HttpPost]
-    public async Task<IActionResult> CreateStudents(StudentAddRequest student)
+    public async Task<IActionResult> CreateStudents([FromBody] StudentAddRequest student)
     {
         try
         {
@@ -85,7 +85,7 @@ public class HomeController : ControllerBase
           
     }
     [HttpPut("{studentID:guid}")]
-    public async Task<IActionResult> UpdateStudent(StudentAddRequest student , Guid studentID)
+    public async Task<IActionResult> UpdateStudent([FromBody]StudentAddRequest student , Guid studentID)
     {
         try
         {

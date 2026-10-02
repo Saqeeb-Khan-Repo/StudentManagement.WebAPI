@@ -66,21 +66,28 @@ public class StudentService : IStudentService
     {
         if (string.IsNullOrWhiteSpace(email))
         {
-            throw new ArgumentException("Email is required.", nameof(email));
+            throw new ArgumentException(
+                "Email is required.",
+                nameof(email));
         }
 
         using var connection = _sqlConnection.CreateConnection();
 
-        StudentAddRequest? studentRequest = await connection.QueryFirstOrDefaultAsync<StudentAddRequest>(
-            "CheckDuplicate",
-            new { Email = email.Trim() },
-            commandType: CommandType.StoredProcedure
-        );
+        StudentAddRequest? studentRequest =
+            await connection.QueryFirstOrDefaultAsync<StudentAddRequest>(
+                "CheckDuplicate",
+                new { Email = email.Trim() },
+                commandType: CommandType.StoredProcedure
+            );
 
-        //dto => student
+        if (studentRequest is null)
+        {
+            return null;
+        }
+
         var student = studentRequest.ToStudent();
-        
-        //Student => Response
+
         return student?.ToStudentResponse();
     }
+
 }
