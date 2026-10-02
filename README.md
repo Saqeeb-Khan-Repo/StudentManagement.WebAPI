@@ -10,7 +10,7 @@ A simple Student Management REST API built with ASP.NET Core Web API, C#, Dapper
 - Dapper
 - SQL Server
 - Stored Procedures
-- Swagger
+- POSTMAN
 
 ## Features
 
@@ -59,7 +59,7 @@ StudentManagement.WebAPI
 
 ## Student Fields
 
-```text
+```
 StudentID
 Name
 Age
@@ -118,7 +118,7 @@ dotnet build
 dotnet run
 ```
 
-After starting the application, open Swagger to test the API.
+After starting the application, open POSTMAN to test the API.
 
 ## Author
 
