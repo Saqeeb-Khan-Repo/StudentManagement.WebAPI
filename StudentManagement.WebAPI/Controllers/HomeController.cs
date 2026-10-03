@@ -89,8 +89,25 @@ public class HomeController : ControllerBase
     {
         try
         {
-            StudentResponse? student1 = await _studentService.UpdateStudentAsync(student,studentID);
-            return Ok(student1);
+            if (studentID == Guid.Empty)
+            {
+                return BadRequest(new
+                {
+                    errorMessage = "Invalid Student ID."
+                });
+            }
+
+            StudentResponse? studentResponse = await _studentService.UpdateStudentAsync(student,studentID);
+
+            if (studentResponse == null)
+            {
+                return NotFound(new
+                {
+                    errorMessage = "Student not found or has already been deleted."
+                });
+            }
+
+            return Ok(studentResponse);
         }
         catch (ArgumentException ex)
         {

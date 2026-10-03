@@ -5,7 +5,6 @@ using StudentManagement.WebAPI.ServiceContracts.DTOs;
 using StudentManagement.WebAPI.SqlConnection1;
 using System.Data;
 
-
 namespace StudentManagement.WebAPI.Repository;
 
 public class StudentsRepo : IStudentRepo
@@ -103,12 +102,25 @@ public class StudentsRepo : IStudentRepo
 
     public async Task<StudentResponse?> UpdateStudentRepo(StudentAddRequest student, Guid studentID)
     {
+        using var connection = _sqlConnection.CreateConnection();
+        //check if user is exists or not
+        Student? existingUser = await  connection.QueryFirstOrDefaultAsync<Student>(
+            "GetStudentByID",
+             new {StudentID = studentID},
+             commandType:CommandType.StoredProcedure
+            );
+
+        if(existingUser == null)
+        {
+            return null;
+        }
+
+
+        //after user exist update code
         if (studentID == Guid.Empty)
         {
             throw new ArgumentException("StudentID cannot be empty.");
         }
-
-        using var connection = _sqlConnection.CreateConnection();
 
         var rowsAffected = await connection.ExecuteAsync(
             "UpdateStudent",
